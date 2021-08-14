@@ -34,4 +34,18 @@ def test2():
     ttt.showGrid(grid)
 
 
-test2()
+def test3():
+    # oslaAgent() test
+    grid = np.array([
+        [1, 0, 1],
+        [2, 0, 2],
+        [0, 0, 0]
+    ])
+    ttt.showGrid(grid)
+    player = 1  # 1:X, 2:O
+    am = [(i, j) for i in range(3) for j in range(3) if grid[i, j] == 0]
+    print(f'Heuristics for player {player} is : ',
+          main.oslaAgent(grid, am, player))
+
+
+test3()

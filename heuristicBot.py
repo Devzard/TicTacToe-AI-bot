@@ -1,15 +1,13 @@
 import TicTacToe as ttt
 import numpy as np
-from random import randint
+import random
 
 
 def randomPlayer(availableMoves):
     """
     returns a random move
     """
-    move = randint(0, len(availableMoves)-1)
-    pmove = availableMoves.pop(move)
-    return pmove
+    return random.choice(availableMoves)
 
 
 def countPattern(grid, count, pattern):
@@ -77,15 +75,31 @@ def getHeuristic(grid, move, player):
     noOf3 = countPattern(tempGrid, 3, player)
     noOf2Opp = countPattern(tempGrid, 2, (player % 2)+1)
     noOf3Opp = countPattern(tempGrid, 3, (player % 2)+1)
-    print(f'2:{noOf2}, 3:{noOf3}, o2:{noOf2Opp}, o3:{noOf3Opp}')
     heuristic = 0 + 10*noOf2 + 100*noOf3 + (-10*noOf2Opp) + (-100*noOf3Opp)
     return heuristic
 
 
-def osaAgent(grid, availableMoves, player):
+def oslAgent(grid, availableMoves, player):
     """
+    one-step-lookahead
     1. places all the available moves and get heurisitcs
     2. choose the move with highest heuristic
+    3. return the move position
+    """
+    heuristics = dict(zip(availableMoves, [getHeuristic(
+        grid, move, player) for move in availableMoves]))
+    maxValue = max(heuristics.values())
+    maxHeuristics = [key for key in heuristics.keys(
+    ) if heuristics[key] == maxValue]
+    return random.choice(maxHeuristics)
+
+
+def nslAgent(n, grid, availableMoves, player):
+    """
+    n-step-lookahead
+    1. look n step ahead
+    2. select the best move using minimax
+    3. return the move position
     """
     pass
 
@@ -95,13 +109,28 @@ def main():
     availableMoves = [(r, c) for r in range(3) for c in range(3)]
     player1 = 1
     player2 = 2
-    while True:
-        p1Move = randomPlayer(availableMoves)
-        if not ttt.gameMove(grid, p1Move, player1):
-            break
-        p2Move = randomPlayer(availableMoves)
-        if not ttt.gameMove(grid, p2Move, player2):
-            break
+    win1 = 0
+    win2 = 0
+    showGrid = False
+    for i in range(100):
+        grid = np.zeros((3, 3))
+        availableMoves = [(r, c) for r in range(3) for c in range(3)]
+        while True:
+            p1Move = randomPlayer(availableMoves)
+            availableMoves.pop(availableMoves.index(p1Move))
+            gameStatus = ttt.gameMove(grid, p1Move, player1, showGrid)
+            if not gameStatus[0]:
+                if gameStatus[1] == 1:
+                    win1 += 1
+                break
+            p2Move = oslAgent(grid, availableMoves, player2)
+            availableMoves.pop(availableMoves.index(p2Move))
+            gameStatus = ttt.gameMove(grid, p2Move, player2, showGrid)
+            if not gameStatus[0]:
+                if gameStatus[1] == 2:
+                    win2 += 1
+                break
+    print(f'>> 1 wins : {win1}, 2 wins : {win2}')
 
 
 if __name__ == '__main__':

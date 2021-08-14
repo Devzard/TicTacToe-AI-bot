@@ -18,18 +18,20 @@ def showGrid(grid):
         print()
 
 
-def checkMoveAndPlace(grid, move, pattern):
+def checkMoveAndPlace(grid, move, pattern, show_stats=True):
     """
     Check if a move is valid and puts it if it is.
     Returns True for valid move and False if not.
     """
     # edge cases
     if (move[0] > 2 or move[1] > 3) or (move[0] < 0 or move[1] < 0):
-        print('>> Invalid index.')
+        if show_stats:
+            print('>> Invalid index by', pattern)
         return False
     # can't place move in already occupied place
     if grid[move] != 0:
-        print('>> Invalid move.')
+        if show_stats:
+            print('>> Invalid move by', pattern)
         return False
     grid[move] = pattern
     return True
@@ -58,36 +60,44 @@ def gridScore(grid):  # returns-> -1:continue, 0:draw, 1:win
     return -1
 
 
-def gameOver(grid, player):
+def gameOver(grid, player, show_stats=True):
     """
     Checks if a game is (won or drawn)(returns True) 
     or it should continue(returns False)
     """
     res = gridScore(grid)
     if res == -1:
-        print('>> Continue.')
-        return False
+        if show_stats:
+            print('>> Continue.')
+        return False, -1
     elif res == 0:
-        print('>> Game draw.')
-        return True
+        if show_stats:
+            print('>> Game draw.')
+        return True, 0
     elif res == 1:
-        print('>>', player, 'wins.')
-        return True
+        if show_stats:
+            print('>>', player, 'wins.')
+        return True, player
 
 
-def gameMove(grid, move, player):
+def gameMove(grid, move, player, show_stats=True):
     """
     Used to pass moves to the grid.
-    returns False if any error occurs else True.
+    returns False, gameStatus if any error occurs else True.
+    gameStatus : -2:invalid move, -1:continue, 0:draw, (1,2):winner
     """
-    print('>>', player, 'move')
-    if not checkMoveAndPlace(grid, move, player):
-        return False
-    showGrid(grid)
-    if gameOver(grid, player):
-        return False
-    print('---------------------')
-    return True
+    if show_stats:
+        print('>>', player, 'move')
+    if not checkMoveAndPlace(grid, move, player, show_stats):
+        return False, -2
+    if show_stats:
+        showGrid(grid)
+    gameStatus = gameOver(grid, player, show_stats)
+    if gameStatus[0]:
+        return False, gameStatus[1]
+    if show_stats:
+        print('---------------------')
+    return True, player
 
 
 def main():
