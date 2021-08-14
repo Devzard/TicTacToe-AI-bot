@@ -7,12 +7,14 @@ patternList = ['_', 'X', 'O']
 def showGrid(grid):
     for row in grid:
         for column in row:
+            print('|', end=' ')
             if column == 1:
                 print(patternList[1], end=' ')
             elif column == 2:
                 print(patternList[2], end=' ')
             else:
                 print(patternList[0], end=' ')
+            print('|', end='')
         print()
 
 
@@ -78,11 +80,13 @@ def gameMove(grid, move, player):
     Used to pass moves to the grid.
     returns False if any error occurs else True.
     """
+    print('>>', player, 'move')
     if not checkMoveAndPlace(grid, move, player):
         return False
     showGrid(grid)
     if gameOver(grid, player):
         return False
+    print('---------------------')
     return True
 
 
