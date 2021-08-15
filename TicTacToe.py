@@ -83,7 +83,8 @@ def gameOver(grid, player, show_stats=True):
 def gameMove(grid, move, player, show_stats=True):
     """
     Used to pass moves to the grid.
-    returns False, gameStatus if any error occurs else True.
+    returns False if any error occurs else True along with gameStatus.
+    e.g. (True, 1)
     gameStatus : -2:invalid move, -1:continue, 0:draw, (1,2):winner
     """
     if show_stats:

@@ -94,14 +94,86 @@ def oslAgent(grid, availableMoves, player):
     return random.choice(maxHeuristics)
 
 
-def nslAgent(n, grid, availableMoves, player):
+def getHeuristic2(grid, player):
+    """
+    checks heuristics.
+    Heuristics : 
+    100 : three pieces in a row,
+    10 : two pieces in a row,
+    -10 : two opponent pieces in a row,
+    -100 : three opponent pieces in a row.
+    """
+    noOf2 = countPattern(grid, 2, player)
+    noOf3 = countPattern(grid, 3, player)
+    noOf2Opp = countPattern(grid, 2, (player % 2)+1)
+    noOf3Opp = countPattern(grid, 3, (player % 2)+1)
+    heuristic = 0 + 10*noOf2 + 100*noOf3 + (-10*noOf2Opp) + (-100*noOf3Opp)
+    return heuristic
+
+
+def minimax(grid, depth, move, isMaximizing, player):
+    """
+    if terminal node or depth = 0 then
+        return the heuristic value of node
+    if maximizing then
+        value = -infinity
+        for every child of node
+            value = max(value, minimax(child, depth-1, minimizing))
+        return value
+    else 
+        value = infinity
+        for every child of node
+            value = min(value, minimax(child, depth-1, maximizing))
+        return value
+    """
+    available = [(i, j) for i in range(3)
+                 for j in range(3) if grid[i, j] == 0]
+    if ttt.gameOver(grid, player, False)[0] or depth == 1:
+        return getHeuristic2(grid, player)
+    if isMaximizing:
+        value = -np.Inf
+        for validMove in available:
+            childGrid = grid.copy()
+            ttt.checkMoveAndPlace(childGrid, validMove, player)
+            value = max(value, minimax(
+                childGrid, depth-1, validMove, False, player))
+        return value
+    else:
+        value = np.Inf
+        for validMove in available:
+            childGrid = grid.copy()
+            ttt.checkMoveAndPlace(childGrid, validMove, (player % 2) + 1)
+            value = min(value, minimax(
+                childGrid, depth - 1, validMove, True, player))
+        return value
+
+
+def nslScoreMove(steps, grid, move, player):
+    """
+    scores each move for nslAgent
+    """
+    tempGrid = grid.copy()
+    ttt.checkMoveAndPlace(tempGrid, move, player)
+    score = minimax(tempGrid, steps, move, False, player)
+    return score
+
+
+def nslAgent(steps, grid, availableMoves, player):
     """
     n-step-lookahead
     1. look n step ahead
     2. select the best move using minimax
     3. return the move position
     """
-    pass
+    # get scores for every available move using minimax
+    # select the max scores
+    # return a random move from max scores
+    heuristics = dict(zip(availableMoves, [nslScoreMove(
+        steps, grid, move, player) for move in availableMoves]))
+    maxValue = max(heuristics.values())
+    maxHeuristics = [key for key in heuristics.keys(
+    ) if heuristics[key] == maxValue]
+    return random.choice(maxHeuristics)
 
 
 def main():
@@ -111,19 +183,25 @@ def main():
     player2 = 2
     win1 = 0
     win2 = 0
-    showGrid = False
-    for i in range(100):
+    showGrid = True
+    noOfMatches = 1
+    for _ in range(noOfMatches):
         grid = np.zeros((3, 3))
         availableMoves = [(r, c) for r in range(3) for c in range(3)]
         while True:
-            p1Move = randomPlayer(availableMoves)
+            # p1Move = randomPlayer(availableMoves)
+            # p1Move = oslAgent(grid, availableMoves, player1) # one-step-lookahead agent
+            # n-step-lookahead agent
+            p1Move = nslAgent(5, grid, availableMoves, player1)
             availableMoves.pop(availableMoves.index(p1Move))
             gameStatus = ttt.gameMove(grid, p1Move, player1, showGrid)
             if not gameStatus[0]:
                 if gameStatus[1] == 1:
                     win1 += 1
                 break
-            p2Move = oslAgent(grid, availableMoves, player2)
+            # p2Move = oslAgent(grid, availableMoves, player2) # one-step-lookahead agent
+            # n-step-lookahead agent
+            p2Move = nslAgent(3, grid, availableMoves, player2)
             availableMoves.pop(availableMoves.index(p2Move))
             gameStatus = ttt.gameMove(grid, p2Move, player2, showGrid)
             if not gameStatus[0]:
