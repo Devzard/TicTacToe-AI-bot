@@ -188,11 +188,14 @@ def main():
     for _ in range(noOfMatches):
         grid = np.zeros((3, 3))
         availableMoves = [(r, c) for r in range(3) for c in range(3)]
+        if showGrid:
+            ttt.showGrid(grid)
         while True:
             # p1Move = randomPlayer(availableMoves)
             # p1Move = oslAgent(grid, availableMoves, player1) # one-step-lookahead agent
             # n-step-lookahead agent
-            p1Move = nslAgent(5, grid, availableMoves, player1)
+            # p1Move = nslAgent(5, grid, availableMoves, player1)
+            p1Move = eval(input('>>Enter your move : '))
             availableMoves.pop(availableMoves.index(p1Move))
             gameStatus = ttt.gameMove(grid, p1Move, player1, showGrid)
             if not gameStatus[0]:

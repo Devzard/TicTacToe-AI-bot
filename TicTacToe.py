@@ -40,7 +40,7 @@ def checkMoveAndPlace(grid, move, pattern, show_stats=True):
 def gridScore(grid):  # returns-> -1:continue, 0:draw, 1:win
     """
     Checks if the grid is completed.
-    If yes it is a draw(returns 0) or win(returns 1)
+    If yes and it is a draw(returns 0) or win(returns 1)
     else the game should continue(returns -1)
     """
     if 0 not in grid:
