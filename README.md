@@ -21,7 +21,8 @@ move = heuristicBot.nslAgent(no_of_step_to_lookahead, game_grid, available_moves
 
 ## Requirements
 
-numpy=1.19.4
-gym=0.18.3
+numpy=1.19.4  
+gym=0.18.3  
+stable-baselines=
 
 by [Debashish Gogoi](https://github.com/Devzard)
