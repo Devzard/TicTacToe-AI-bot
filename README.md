@@ -1,6 +1,6 @@
 # Tic-Tac-Toe AI bot
 
-A bot for Tic-Tac-Toe that uses reinforcement learning.
+A bot for Tic-Tac-Toe that uses deep reinforcement learning.
 
 ## Additional
 
@@ -21,8 +21,10 @@ move = heuristicBot.nslAgent(no_of_step_to_lookahead, game_grid, available_moves
 
 ## Requirements
 
-numpy=1.19.4  
-gym=0.18.3  
-stable-baselines=
+numpy==1.19.4  
+gym==0.18.3  
+stable-baselines==2.10.2  
+tensorflow==1.15.0  
+tensorflow-gpu==1.15.0
 
 by [Debashish Gogoi](https://github.com/Devzard)
