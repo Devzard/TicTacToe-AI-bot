@@ -10,7 +10,7 @@ Trained weights are present in [`dqn_weights.h5f`](dqn_weights.h5f.index)
 
 1. A **PPO** agent built with stable-baselines.
 
-   > All code in [`MlpPolicy.ipynb`](MlpPolicy_test.py)
+   > All code in [`MlpPolicy.ipynb`](MlpPolicy.ipynb)
 
    A trained model with PPO1 of stable baselines is in [`PPO1_model`](PPO1_model.zip).  
    A trained model with PPO2 of stable baselines is in [`PPO2_model`](PPO2_model.zip).
